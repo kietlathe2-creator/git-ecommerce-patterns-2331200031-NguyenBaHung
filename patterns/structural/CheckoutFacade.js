@@ -17,6 +17,24 @@ class CheckoutFacade {
         // 2. If they are, process the payment using `paymentService.processPayment()`.
         // 3. If payment is successful, arrange shipping using `shippingService.arrangeShipping()`.
         // 4. Log the result of each step. If a step fails, log it and stop.
+
+        console.log("---Bắt đầu xử lí đơn hàng cho: "+ orderDetails.userId + " ---");
+        const inStock = this.inventoryService.checkStock(orderDetails.productIds);
+        if(inStock){
+            const paymentSuccess = this.paymentService.processPayment(orderDetails.userId, 1200);
+
+            if(paymentSuccess){
+                this.shippingService.arrangeShipping(orderDetails.userId, orderDetails.shippingInfo);
+                console.log("Đơn hàng đã hoàn tất thành công.");
+            }else{
+                console.log("Lỗi: Thanh toán thất bại");
+            }
+        }else{
+            console.log("Sản phẩm đã hết hàng trong kho.");
+        }
+
+       
+
     }
 }
 
